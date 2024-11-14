@@ -170,6 +170,8 @@ def detect_face_retinaface(ctx: Context):
     """
     from time import time
 
+    model_dir = base_dir.replace('custom_nodes', 'models', 1)
+
     global RETINAFCE_SESS
 
     if RETINAFCE_SESS is None:
@@ -178,7 +180,7 @@ def detect_face_retinaface(ctx: Context):
         tic = time()
         faces_dets, sess = retinaface_detect_faces(
             ctx.origin_image,
-            os.path.join(base_dir, "retinaface/weights/retinaface-resnet50.onnx"),
+            os.path.join(model_dir, "retinaface/weights/retinaface-resnet50.onnx"),
             sess=None,
         )
         RETINAFCE_SESS = sess
@@ -187,7 +189,7 @@ def detect_face_retinaface(ctx: Context):
         tic = time()
         faces_dets, _ = retinaface_detect_faces(
             ctx.origin_image,
-            os.path.join(base_dir, "retinaface/weights/retinaface-resnet50.onnx"),
+            os.path.join(model_dir, "retinaface/weights/retinaface-resnet50.onnx"),
             sess=RETINAFCE_SESS,
         )
         print("二次RetinaFace模型推理用时: {:.4f}s".format(time() - tic))

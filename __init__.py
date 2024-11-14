@@ -29,9 +29,11 @@ color_list_CN = list(color_list_dict_CN.keys())
 color_list_dict_EN = csv_to_color_list(os.path.join(now_dir, "hivision/demo/assets/color_list_EN.csv"))
 color_list_EN = list(color_list_dict_EN.keys())
 
+model_dir = now_dir.replace('custom_nodes', 'models', 1)
+
 HUMAN_MATTING_MODELS_EXIST = [
     os.path.splitext(file)[0]
-    for file in os.listdir(os.path.join(now_dir, "hivision/creator/weights"))
+    for file in os.listdir(os.path.join(model_dir, "hivision/creator/weights"))
     if file.endswith(".onnx") or file.endswith(".mnn")
 ]
 # 在HUMAN_MATTING_MODELS中的模型才会被加载到Gradio中显示
@@ -45,7 +47,7 @@ FACE_DETECT_MODELS_EXPAND = (
     ["retinaface-resnet50"]
     if os.path.exists(
         os.path.join(
-            now_dir, "hivision/creator/retinaface/weights/retinaface-resnet50.onnx"
+            model_dir, "hivision/creator/retinaface/weights/retinaface-resnet50.onnx"
         )
     )
     else []

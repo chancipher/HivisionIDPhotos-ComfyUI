@@ -17,23 +17,25 @@ import os
 from time import time
 
 
+model_dir = os.path.dirname(__file__).replace('custom_nodes', 'models', 1)
+
 WEIGHTS = {
     "hivision_modnet": os.path.join(
-        os.path.dirname(__file__), "weights", "hivision_modnet.onnx"
+        model_dir, "weights", "hivision_modnet.onnx"
     ),
     "modnet_photographic_portrait_matting": os.path.join(
-        os.path.dirname(__file__),
+        model_dir,
         "weights",
         "modnet_photographic_portrait_matting.onnx",
     ),
     "mnn_hivision_modnet": os.path.join(
-        os.path.dirname(__file__),
+        model_dir,
         "weights",
         "mnn_hivision_modnet.mnn",
     ),
-    "rmbg-1.4": os.path.join(os.path.dirname(__file__), "weights", "rmbg-1.4.onnx"),
+    "rmbg-1.4": os.path.join(model_dir, "weights", "rmbg-1.4.onnx"),
     "birefnet-v1-lite": os.path.join(
-        os.path.dirname(__file__), "weights", "birefnet-v1-lite.onnx"
+        model_dir, "weights", "birefnet-v1-lite.onnx"
     ),
 }
 
