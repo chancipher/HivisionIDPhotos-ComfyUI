@@ -171,7 +171,7 @@ def detect_face_retinaface(ctx: Context):
     """
     from time import time
 
-    model_dir = re.sub(r'custom_nodes(/.+)?', 'models', base_dir, 1)
+    model_dir = re.sub(r'custom_nodes/[^/]+', 'models', base_dir, 1)
 
     global RETINAFCE_SESS
 
