@@ -21,6 +21,7 @@ import requests
 import cv2
 import os
 import numpy as np
+import re
 
 
 mtcnn = None
@@ -170,7 +171,7 @@ def detect_face_retinaface(ctx: Context):
     """
     from time import time
 
-    model_dir = base_dir.replace('custom_nodes', 'models', 1)
+    model_dir = re.sub(r'custom_nodes(/.+)?', 'models', base_dir, 1)
 
     global RETINAFCE_SESS
 

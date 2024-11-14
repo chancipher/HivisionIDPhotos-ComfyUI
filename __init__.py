@@ -1,4 +1,5 @@
 import os,sys
+import re
 now_dir = os.path.dirname(os.path.abspath(__file__))
 
 sys.path.append(now_dir)
@@ -29,7 +30,7 @@ color_list_CN = list(color_list_dict_CN.keys())
 color_list_dict_EN = csv_to_color_list(os.path.join(now_dir, "hivision/demo/assets/color_list_EN.csv"))
 color_list_EN = list(color_list_dict_EN.keys())
 
-model_dir = now_dir.replace('custom_nodes', 'models', 1)
+model_dir = re.sub(r'custom_nodes(/.+)?', 'models', now_dir, 1)
 
 HUMAN_MATTING_MODELS_EXIST = [
     os.path.splitext(file)[0]

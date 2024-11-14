@@ -15,9 +15,9 @@ from .context import Context
 import cv2
 import os
 from time import time
+import re
 
-
-model_dir = os.path.dirname(__file__).replace('custom_nodes', 'models', 1)
+model_dir = re.sub(r'custom_nodes(/.+)?', 'models', os.path.dirname(__file__), 1)
 
 WEIGHTS = {
     "hivision_modnet": os.path.join(
