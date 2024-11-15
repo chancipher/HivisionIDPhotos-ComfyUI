@@ -1,6 +1,6 @@
 import cv2
 from hivision.creator.context import Context
-from hivision.plugin.beauty.whitening import make_whitening
+from hivision.plugin.beauty.whitening import make_whitening_png
 from hivision.plugin.beauty.base_adjust import (
     adjust_brightness_contrast_sharpen_saturation,
 )
@@ -19,7 +19,7 @@ def beauty_face(ctx: Context):
 
     # 如果美白强度大于0，进行美白处理
     if ctx.params.whitening_strength > 0:
-        middle_image = make_whitening(middle_image, ctx.params.whitening_strength)
+        middle_image = make_whitening_png(middle_image, ctx.params.whitening_strength)
         processed = True
 
     # 如果亮度、对比度、锐化强度不为0，进行亮度、对比度、锐化处理
@@ -41,7 +41,7 @@ def beauty_face(ctx: Context):
     # 如果进行了美颜处理，更新matting_image
     if processed:
         # 分离中间图像的BGR通道
-        b, g, r = cv2.split(middle_image)
+        b, g, r, a = cv2.split(middle_image)
         # 从原始matting_image中获取alpha通道
         _, _, _, alpha = cv2.split(ctx.matting_image)
         # 合并处理后的BGR通道和原始alpha通道

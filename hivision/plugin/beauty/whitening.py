@@ -3,12 +3,11 @@ import numpy as np
 import os
 
 class LutWhite:
-    CUBE64_ROWS = 8
-    CUBE64_SIZE = 64
-    CUBE256_SIZE = 256
-    CUBE_SCALE = CUBE256_SIZE // CUBE64_SIZE
-
     def __init__(self, lut_image):
+        self.CUBE64_ROWS = 8
+        self.CUBE64_SIZE = 64
+        self.CUBE256_SIZE = 256
+        self.CUBE_SCALE = self.CUBE256_SIZE // self.CUBE64_SIZE
         self.lut = self._create_lut(lut_image)
 
     def _create_lut(self, lut_image):
@@ -30,9 +29,10 @@ class LutWhite:
         b, g, r = src[:, :, 0], src[:, :, 1], src[:, :, 2]
         return self.lut[b, g, r]
 
-
 class MakeWhiter:
     def __init__(self, lut_image):
+        if lut_image is None or lut_image.size == 0:
+            raise ValueError("Invalid LUT image provided.")
         self.lut_white = LutWhite(lut_image)
 
     def run(self, src: np.ndarray, strength: int) -> np.ndarray:
@@ -42,11 +42,10 @@ class MakeWhiter:
         img = self.lut_white.apply(src[:, :, :3])
         return cv2.addWeighted(src[:, :, :3], 1 - strength, img, strength, 0)
 
-
+# Load LUT globally for better performance
 base_dir = os.path.dirname(os.path.abspath(__file__))
 default_lut = cv2.imread(os.path.join(base_dir, "lut/lut_origin.png"))
 make_whiter = MakeWhiter(default_lut)
-
 
 def make_whitening(image, strength):
     image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
@@ -58,9 +57,7 @@ def make_whitening(image, strength):
         image = make_whiter.run(image, 10)
 
     image = make_whiter.run(image, bias)
-
     return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-
 
 def make_whitening_png(image, strength):
     image = cv2.cvtColor(np.array(image), cv2.COLOR_RGBA2BGRA)
@@ -72,4 +69,3 @@ def make_whitening_png(image, strength):
     output_image = cv2.merge((b_w, g_w, r_w, a))
 
     return cv2.cvtColor(output_image, cv2.COLOR_RGBA2BGRA)
-

@@ -62,13 +62,24 @@ def adjust_saturation(image, saturation_factor):
     返回:
     numpy.ndarray: 调整后的图像。
     """
-    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    if image.shape[2] == 4:  # 如果是 RGBA 图像
+        b, g, r, a = cv2.split(image)
+        bgr = cv2.merge([b, g, r])
+    else:
+        bgr = image
+
+    hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(hsv)
     s = s.astype(np.float32)
     s = s + s * (saturation_factor / 100.0)
     s = np.clip(s, 0, 255).astype(np.uint8)
     hsv = cv2.merge([h, s, v])
-    return cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
+    adjusted_bgr = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
+
+    if image.shape[2] == 4:  # 如果输入是 RGBA
+        b, g, r = cv2.split(adjusted_bgr)
+        return cv2.merge([b, g, r, a])  # 添加透明通道
+    return adjusted_bgr
 
 
 def sharpen_image(image, strength=0):
