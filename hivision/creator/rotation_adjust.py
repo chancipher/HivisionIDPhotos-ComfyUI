@@ -75,7 +75,7 @@ def rotate_bound_4channels(image: np.ndarray, a: np.ndarray, angle: float, cente
     """
     input_image, cos, sin, dW, dH = rotate_bound(image, angle, center)
     new_a, _, _, _, _ = rotate_bound(a, angle, center)  # 对alpha通道进行旋转
-    b, g, r = cv2.split(input_image)
+    b, g, r, a = cv2.split(input_image)
     result_image = cv2.merge((b, g, r, new_a))  # 合并旋转后的RGB通道和alpha通道
 
     return input_image, result_image, cos, sin, dW, dH

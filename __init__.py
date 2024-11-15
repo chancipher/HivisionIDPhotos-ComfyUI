@@ -17,7 +17,7 @@ from hivision.creator.layout_calculator import (
     generate_layout_image,
 )
 from hivision.demo.utils import csv_to_size_list,csv_to_color_list
-from hivision.creator.choose_handler import choose_handler, HUMAN_MATTING_MODELS
+from hivision.creator.choose_handler import choose_handler 
 
 
 size_list_dict_CN = csv_to_size_list(os.path.join(now_dir, "hivision/demo/assets/size_list_CN.csv"))
@@ -30,30 +30,8 @@ color_list_CN = list(color_list_dict_CN.keys())
 color_list_dict_EN = csv_to_color_list(os.path.join(now_dir, "hivision/demo/assets/color_list_EN.csv"))
 color_list_EN = list(color_list_dict_EN.keys())
 
-model_dir = re.sub(r'custom_nodes(/.+)?', 'models', now_dir, 1)
-
-HUMAN_MATTING_MODELS_EXIST = [
-    os.path.splitext(file)[0]
-    for file in os.listdir(os.path.join(model_dir, "hivision/creator/weights"))
-    if file.endswith(".onnx") or file.endswith(".mnn")
-]
-# 在HUMAN_MATTING_MODELS中的模型才会被加载到Gradio中显示
-HUMAN_MATTING_MODELS = [
-    model for model in HUMAN_MATTING_MODELS if model in HUMAN_MATTING_MODELS_EXIST
-]
-
 
 FACE_DETECT_MODELS = ["mtcnn"]
-FACE_DETECT_MODELS_EXPAND = (
-    ["retinaface-resnet50"]
-    if os.path.exists(
-        os.path.join(
-            model_dir, "hivision/creator/retinaface/weights/retinaface-resnet50.onnx"
-        )
-    )
-    else []
-)
-FACE_DETECT_MODELS += FACE_DETECT_MODELS_EXPAND
 
 class ENHivisionParamsNode:
     @classmethod
@@ -350,8 +328,6 @@ class HivisionNode:
                 "crop_only":("BOOLEAN",{
                     "default": False
                 }),
-                "matting_model":(HUMAN_MATTING_MODELS,),
-                "face_detect_model":(FACE_DETECT_MODELS,),
                 "head_measure_ratio":("FLOAT",{
                     "default": 0.2,
                     "min":0.1,
@@ -415,22 +391,20 @@ class HivisionNode:
 
     CATEGORY = "AIFSH_HivisionIDPhotos"
         
-    def gen_img(self,input_img,normal_params,face_alignment,change_bg_only,crop_only,matting_model,
-                face_detect_model,head_measure_ratio,top_distance,whitening_strength,
+    def gen_img(self,input_img,normal_params,face_alignment,change_bg_only,crop_only,
+                head_measure_ratio,top_distance,whitening_strength,
                 brightness_strength,contrast_strength,saturation_strength,sharpen_strength):
         creator = IDCreator()
 
-        # ------------------- 人像抠图模型选择 -------------------
-        choose_handler(creator,matting_model_option=matting_model,
-                       face_detect_option=face_detect_model)
+        choose_handler(creator)
 
         img_np = input_img.numpy()[0] * 255
         img_np = img_np.astype(np.uint8)
-        input_image = cv2.cvtColor(img_np,cv2.COLOR_BGR2RGB)
+        input_img = cv2.cvtColor(img_np,cv2.COLOR_BGR2RGBA)
         
         size = normal_params["size"]
         try:
-            result = creator(input_image, size=size,
+            result = creator(input_img, size=size,
                                 head_measure_ratio=head_measure_ratio,
                                 head_top_range=(top_distance, top_distance-0.02),
                                 change_bg_only=change_bg_only,

@@ -11,7 +11,6 @@ import numpy as np
 from typing import Tuple
 import hivision.creator.utils as U
 from .context import Context, ContextHandler, Params, Result
-from .human_matting import extract_human
 from .face_detector import detect_face_mtcnn
 from hivision.plugin.beauty.handler import beauty_face
 from .photo_adjuster import adjust_photo
@@ -42,7 +41,6 @@ class IDCreator:
         在所有处理之后，此时 ctx.result 被赋值
         """
         # 处理者
-        self.matting_handler: ContextHandler = extract_human
         self.detection_handler: ContextHandler = detect_face_mtcnn
         self.beauty_handler: ContextHandler = beauty_face
         # 上下文
@@ -109,13 +107,8 @@ class IDCreator:
         ctx.origin_image = ctx.processing_image.copy()
         self.before_all and self.before_all(ctx)
 
-        # 1. ------------------人像抠图------------------
-        if not ctx.params.crop_only:
-            # 调用抠图工作流
-            self.matting_handler(ctx)
-            self.after_matting and self.after_matting(ctx)
-        else:
-            ctx.matting_image = ctx.processing_image
+        # 输入的图片已抠图
+        ctx.matting_image = ctx.processing_image
 
         # 2. ------------------美颜------------------
         self.beauty_handler(ctx)
