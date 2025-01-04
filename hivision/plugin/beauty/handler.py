@@ -11,6 +11,7 @@ def beauty_face(ctx: Context):
     对人脸进行美颜处理
     1. 美白
     2. 亮度
+    3. 磨皮
 
     :param ctx: Context对象，包含处理参数和图像
     """

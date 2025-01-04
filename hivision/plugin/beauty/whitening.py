@@ -44,7 +44,7 @@ class MakeWhiter:
 
 # Load LUT globally for better performance
 base_dir = os.path.dirname(os.path.abspath(__file__))
-default_lut = cv2.imread(os.path.join(base_dir, "lut/lut_origin.png"))
+default_lut = cv2.imread(os.path.join(base_dir, "lut/lookup_custom.png"))
 make_whiter = MakeWhiter(default_lut)
 
 def make_whitening(image, strength):
@@ -60,12 +60,30 @@ def make_whitening(image, strength):
     return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
 def make_whitening_png(image, strength):
-    image = cv2.cvtColor(np.array(image), cv2.COLOR_RGBA2BGRA)
+    image = cv2.cvtColor(np.array(image), cv2.COLOR_RGBA2BGRA)  # Convert RGBA to BGRA
 
+    # Split the image into its RGBA channels
     b, g, r, a = cv2.split(image)
+
+    # Merge only RGB channels for whitening
     bgr_image = cv2.merge((b, g, r))
 
-    b_w, g_w, r_w = cv2.split(make_whiter.run(bgr_image, strength))
+    # Calculate the number of full 10% iterations and the remaining strength
+    iteration = strength // 10
+    bias = strength % 10
+
+    # Apply whitening iteratively in full steps for the RGB channels
+    for i in range(iteration):
+        bgr_image = make_whiter.run(bgr_image, 10)
+
+    # Apply the remaining whitening for the RGB channels
+    bgr_image = make_whiter.run(bgr_image, bias)
+
+    # Split the whitened image into its RGB channels
+    b_w, g_w, r_w = cv2.split(bgr_image)
+
+    # Merge the whitened RGB channels with the original alpha channel
     output_image = cv2.merge((b_w, g_w, r_w, a))
 
-    return cv2.cvtColor(output_image, cv2.COLOR_RGBA2BGRA)
+    # Convert back to RGBA and return the result
+    return cv2.cvtColor(output_image, cv2.COLOR_BGRA2RGBA)

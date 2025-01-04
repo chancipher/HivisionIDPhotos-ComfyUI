@@ -345,10 +345,10 @@ class HivisionNode:
                     "display":"slider"
                 }),
                 "whitening_strength":("INT",{
-                    "default": 2,
+                    "default": 0,
                     "min":0,
-                    "max":15,
-                    "step":1,
+                    "max":40,
+                    "step":5,
                     "display":"slider"
                 }),
                  "brightness_strength":("INT",{
