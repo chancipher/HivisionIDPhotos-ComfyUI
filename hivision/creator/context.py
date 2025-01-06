@@ -22,6 +22,7 @@ class Params:
         head_top_range: float = (0.12, 0.1),
         face: Tuple[int, int, int, int] = None,
         whitening_strength: int = 0,
+        grind_strength: int = 0,
         brightness_strength: int = 0,
         contrast_strength: int = 0,
         sharpen_strength: int = 0,
@@ -36,6 +37,7 @@ class Params:
         self.__head_top_range = head_top_range
         self.__face = face
         self.__whitening_strength = whitening_strength
+        self.__grind_strength = grind_strength
         self.__brightness_strength = brightness_strength
         self.__contrast_strength = contrast_strength
         self.__sharpen_strength = sharpen_strength
@@ -73,6 +75,10 @@ class Params:
     @property
     def whitening_strength(self):
         return self.__whitening_strength
+
+    @property
+    def grind_strength(self):
+        return self.__grind_strength
 
     @property
     def brightness_strength(self):

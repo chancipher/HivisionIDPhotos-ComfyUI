@@ -351,6 +351,13 @@ class HivisionNode:
                     "step":5,
                     "display":"slider"
                 }),
+                "grind_strength":("INT",{
+                    "default": 0,
+                    "min":0,
+                    "max":10,
+                    "step":1,
+                    "display":"slider"
+                }),
                  "brightness_strength":("INT",{
                     "default": 0,
                     "min":-5,
@@ -392,7 +399,7 @@ class HivisionNode:
     CATEGORY = "AIFSH_HivisionIDPhotos"
         
     def gen_img(self,input_img,normal_params,face_alignment,change_bg_only,crop_only,
-                head_measure_ratio,top_distance,whitening_strength,
+                head_measure_ratio,top_distance,whitening_strength,grind_strength,
                 brightness_strength,contrast_strength,saturation_strength,sharpen_strength):
         creator = IDCreator()
 
@@ -411,6 +418,7 @@ class HivisionNode:
                                 crop_only=crop_only,
                                 face_alignment=face_alignment,
                                 whitening_strength=whitening_strength,
+                                grind_strength=grind_strength,
                                 brightness_strength=brightness_strength,
                                 contrast_strength = contrast_strength,
                                 sharpen_strength=sharpen_strength,

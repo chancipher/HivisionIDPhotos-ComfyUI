@@ -1,6 +1,7 @@
 import cv2
 from hivision.creator.context import Context
 from hivision.plugin.beauty.whitening import make_whitening_png
+from hivision.plugin.beauty.grind_skin import make_grinding_png
 from hivision.plugin.beauty.base_adjust import (
     adjust_brightness_contrast_sharpen_saturation,
 )
@@ -21,6 +22,10 @@ def beauty_face(ctx: Context):
     # 如果美白强度大于0，进行美白处理
     if ctx.params.whitening_strength > 0:
         middle_image = make_whitening_png(middle_image, ctx.params.whitening_strength)
+        processed = True
+
+    if ctx.params.grind_strength > 0:
+        middle_image = make_grinding_png(middle_image, ctx.params.grind_strength)
         processed = True
 
     # 如果亮度、对比度、锐化强度不为0，进行亮度、对比度、锐化处理

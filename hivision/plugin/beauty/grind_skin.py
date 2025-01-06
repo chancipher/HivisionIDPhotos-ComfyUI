@@ -82,3 +82,22 @@ def process_image(input_img, grind_degree, detail_degree, strength):
     combined_img_rgb = cv2.cvtColor(combined_img, cv2.COLOR_BGR2RGB)
     return combined_img_rgb
 
+
+def make_grinding_png(image, strength):
+    image = cv2.cvtColor(np.array(image), cv2.COLOR_RGBA2BGRA)  # Convert RGBA to BGRA
+
+    # Split the image into its RGBA channels
+    b, g, r, a = cv2.split(image)
+
+    # Merge only RGB channels for whitening
+    bgr_image = cv2.merge((b, g, r))
+    bgr_image = grindSkin(bgr_image, strength=strength)
+
+    # Split the whitened image into its RGB channels
+    b_w, g_w, r_w = cv2.split(bgr_image)
+
+    # Merge the whitened RGB channels with the original alpha channel
+    output_image = cv2.merge((b_w, g_w, r_w, a))
+
+    # Convert back to RGBA and return the result
+    return cv2.cvtColor(output_image, cv2.COLOR_BGRA2RGBA)
